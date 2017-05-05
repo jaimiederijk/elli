@@ -1,27 +1,60 @@
 var htmlElements = {
-  contacts: document.getElementsByTagName('div')
+  messages: $("#messages"),
+  button1:$("#button1"),
+  button2:$("#button2")
 
 };
 var app = {
   init: function() {
-    contactsInteractions.addClick();
+    messagesHandler.addClick();
 
   }
 };
 
-var contactsInteractions = {
-  addClick : function () {
-    for (var i = 0; i < htmlElements.contacts.length; i++) (function(i) { //temp scope to make it work with onclick
-      htmlElements.contacts[i].removeAttribute("tabindex");
-      htmlElements.contacts[i].onclick = function() {
-        if (htmlElements.contacts[i].className == "show") {
-          htmlElements.contacts[i].className = htmlElements.contacts[i].className.replace(/\bshow/g, "");
-        } else {
-          htmlElements.contacts[i].className = "show";
-        }
+var simpleResponses = {
+  question1: {  
+    message1 : "<div class='messageUser'> <p>Hello, mijn naam is Herbert</p> </div>",
+    message2 : ""
+  }
 
-      }
-    })(i);
+}
+// tekst in knoppen
+var answers = {
+  question1: {
+    answer1: "cool",
+    answer2: "not cool"
+  },
+  question2: {
+    answer1: "coloe",
+    answer2: "not cool"
+  }
+}
+
+var questionNumber = 1;
+
+var messagesHandler = {
+  addClick : function () {
+    htmlElements.button1.addEventListener("click", function() {
+      debugger
+      questionNumber++;
+      var question = "question" + questionNumber;
+      htmlElements.messages.append(simpleResponses[question].message1);
+      buttonText();
+    })
+
+    htmlElements.button2.onclick = function() {
+     questionNumber++;
+      var question = "question" + questionNumber;
+      htmlElements.messages.append(simpleResponses[question].message2);
+      buttonText();
+    }
+
+    var buttonText = function() {
+     var question = "question" + questionNumber;
+      htmlElements.button1.innerHTML= answers[question].answer1;
+      htmlElements.button1.innerHTML = answers[question].answer2; 
+    }
+    
 
   }
 };
