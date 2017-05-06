@@ -30,7 +30,7 @@
 
     <div id="buttonArea">
       <button id="button1">Ik ben Herbert!</button>
-      <button id="button2">Ik ben Herbert!</button>
+      <button id="button2">Ik ben Kasper!</button>
     </div>
   <footer>
     <p>gemaakt door <a target="_blank" href="http://www.herbertdevrijer.nl">Herbert de Vrijer</a> voor CMD amsterdam</p>
