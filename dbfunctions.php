@@ -12,7 +12,7 @@
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $userCode = test_input($_POST["usercode"]);
-    $response = $_POST["response"];
+    $response = test_input($_POST["response"]);
     $questionNumber = test_input($_POST["questionnumber"]);
 
     $responseWithNumber = "response".$questionNumber;
