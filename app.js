@@ -22,7 +22,7 @@ var app = {
 // lijst met antwoorden die de gebruiker geeft
 var simpleUserResponses = {
   question1: {
-    message1 : "Hello, mijn naam is" + name,
+    message1 : "Hello, mijn naam is " + name,
     message2 : ""
   },
   question2: {
@@ -60,12 +60,18 @@ var questionNumber = 1;
 
 var currentUserCode = 111111;// !!!!!! FIX ME   usercode moet gebruiker afhankelijk worden
 
+var userName = "";
+
 // de verzameling functie die de chat afhandelen
 var messagesHandler = {
   addClick : function () {
     // click events op de buttons
     htmlElements.submit.click( function() {
-      messagesHandler.responseInit(1, true);
+      var formData = $('form').serializeArray();
+       //var name = document.getElementById('name').value;   werkt ook maar dit is netter
+      var formName = formData[0].value;
+      name = formName;
+      messagesHandler.storeName(currentUserCode, formName);
     });
     htmlElements.button1.click( function() {
       messagesHandler.responseInit(1, true);
@@ -76,7 +82,6 @@ var messagesHandler = {
   },
   responseInit : function (answerNumber, withTimeOut) {
     // roep functies op met als argument welk antwoord(nummer) er gegeven moet worden
-    messagesHandler.storeName(name);
     messagesHandler.userResponse(answerNumber);
     // timeout die vertraagd de response van Elli oproept
     if (withTimeOut) {
@@ -135,12 +140,11 @@ var messagesHandler = {
 
 
   // stuurt de info naar de php die het vervolgens in de database zet
-  storeName: function (userCode, name ) {
+  storeName: function (userCode, namep ) {
     // post request naar dbfunctions.php
-    var name = document.getElementById('name').value;
     $.post("php/dbfunctions.php", {
         usercode: userCode,
-        name: name
+        name: namep
     }, function() {
       console.log(name + " has been stored");
     });
@@ -165,17 +169,20 @@ var dataHandler = {
 
     } else {
       var responseJSON = data;
-
-      for (var i = 0; i < responseJSON.length; i++) {
+      if (responseJSON.name !=="") {
+        name = responseJSON.name;
+      }
+      for (var i = 0; i < responseJSON.responses.length; i++) {
         // if response[number] is not empty
-        if (responseJSON[i]!=="") {
-          
-          var answerNum = responseJSON[i].slice(-1);
+        if (responseJSON.responses[i]!=="") {
+
+          var answerNum = responseJSON.responses[i].slice(-1);
 
           messagesHandler.responseInit(answerNum,false);
         }
 
       }
+
 
     }
 

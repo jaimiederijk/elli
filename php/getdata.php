@@ -22,7 +22,10 @@
       if ($result->num_rows > 0) {
       // output data of each row
       while($row = $result->fetch_assoc()) {
-        $array = array($row["response1"], $row["response2"], $row["response3"], $row["response4"], $row["response5"], $row["response6"] );
+        $array = array("responses" => array(
+          $row["response1"], $row["response2"], $row["response3"], $row["response4"], $row["response5"], $row["response6"]),
+          "name" => $row["name"]
+        );
 
 
         echo json_encode($array);

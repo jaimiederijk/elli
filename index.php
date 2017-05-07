@@ -1,5 +1,5 @@
 <?php
-  
+
 ?>
 
 <html lang="nl">
@@ -18,7 +18,7 @@
       </div>
     </div>
 
-    <form action="index.php" method="get">
+    <form>
       <input type="text" name="name" id="name">
       <input type="submit" id="submit">
     </form>
