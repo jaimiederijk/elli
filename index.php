@@ -1,5 +1,5 @@
 <?php
-  require 'dbfunctions.php';
+  
 ?>
 
 <html lang="nl">

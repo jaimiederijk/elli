@@ -12,7 +12,7 @@ var app = {
   init: function() {
     //de functie die click events aan button hangt
     messagesHandler.addClick();
-
+    dataHandler.getResponseHistory();
   }
 };
 
@@ -55,74 +55,109 @@ var answers = {
 // variable die bijhoudt op welke vraag en antwoord je zit
 var questionNumber = 1;
 
+var currentUserCode = 111111;// !!!!!! FIX ME   usercode moet gebruiker afhankelijk worden
+
 // de verzameling functie die de chat afhandelen
 var messagesHandler = {
   addClick : function () {
     // click events op de buttons
     htmlElements.button1.click( function() {
-
-      // roep functies op met als argument welk antwoord(nummer) er gegeven moet worden
-      userResponse(1);
-      // timeout die vertraagd de response van Elli oproept
-      setTimeout( function() {
-        elliResponse(1)
-      }, 1000);
-    })
-
+      messagesHandler.responseInit(1, true);
+    });
     htmlElements.button2.click( function() {
-
-      userResponse(2);
+      messagesHandler.responseInit(2, true);
+    });
+  },
+  responseInit : function (answerNumber, withTimeOut) {
+    // roep functies op met als argument welk antwoord(nummer) er gegeven moet worden
+    messagesHandler.userResponse(answerNumber);
+    // timeout die vertraagd de response van Elli oproept
+    if (withTimeOut) {
       setTimeout( function() {
-        elliResponse(2)
+        messagesHandler.elliResponse(answerNumber);
       }, 1000);
-    })
-
-    // veranderd de text in de buttons
-    function changeButtonText () {
-      var question = "question" + questionNumber;
-
-      htmlElements.button1.html(answers[question].answer1);
-      htmlElements.button2.html(answers[question].answer2);
+    } else {
+      messagesHandler.elliResponse(answerNumber);
     }
 
-    // maakt het antwoord van de gebruiker en slaat deze op
-    function userResponse (messageNumber) {
-      var question = "question" + questionNumber;
-      var message = "message" + messageNumber;
-      var response = simpleUserResponses[question][message];
-      var userCode = 111111; // !!!!!! FIX ME   usercode moet gebruiker afhankelijk worden
+  },
 
-      storeUserResponse(userCode, response)
+  // veranderd de text in de buttons
+  changeButtonText : function () {
+    var question = "question" + questionNumber;
 
-      // voorkom dat er html naar de database gestuurd wordt
-      var responseHTML = "<div class='messageUser'> <p>" + response +  "</p> </div>";
-      htmlElements.messages.append(responseHTML);
-    }
+    htmlElements.button1.html(answers[question].answer1);
+    htmlElements.button2.html(answers[question].answer2);
+  },
 
-    // maakt het antwoord van Elli
-    function elliResponse (messageNumber) {
-      var question = "question" + questionNumber;
-      var message = "message" + messageNumber;
+  // maakt het antwoord van de gebruiker en slaat deze op
+  userResponse: function (messageNumber) {
+    var question = "question" + questionNumber;
+    var message = "message" + messageNumber;
+    var response = simpleUserResponses[question][message];
+    var userCode = currentUserCode;
 
-      htmlElements.messages.append(simpleElliResponses[question][message]);
-      changeButtonText();
-      questionNumber++;
-    }
+    messagesHandler.storeUserResponse(userCode, response+" "+messageNumber)
 
-    // stuurt de info naar de php die het vervolgens in de database zet
-    function storeUserResponse (userCode, response ) {
-      // post request naar index.php waar word doorverwezen naar dbfunctions.php
-      $.post("index.php", {
-          questionnumber : questionNumber,
-          usercode: userCode,
-          response: response
-      }, function() {
-        console.log("response" + questionNumber + " has been stored");
-      });
-    }
+    // voorkom dat er html naar de database gestuurd wordt
+    var responseHTML = "<div class='messageUser'> <p>" + response +  "</p> </div>";
+    htmlElements.messages.append(responseHTML);
+  },
 
+  // maakt het antwoord van Elli
+  elliResponse: function (messageNumber) {
+    var question = "question" + questionNumber;
+    var message = "message" + messageNumber;
+
+    htmlElements.messages.append(simpleElliResponses[question][message]);
+    messagesHandler.changeButtonText();
+    questionNumber++;
+  },
+
+  // stuurt de info naar de php die het vervolgens in de database zet
+  storeUserResponse: function (userCode, response ) {
+    // post request naar dbfunctions.php
+    $.post("dbfunctions.php", {
+        questionnumber : questionNumber,
+        usercode: userCode,
+        response: response
+    }, function() {
+      console.log("response" + questionNumber + " has been stored");
+    });
   }
 };
+
+var dataHandler = {
+  getResponseHistory : function () {
+    $.get("dbfunctions.php",{
+      usercode: currentUserCode
+    }, function(data, status){
+        dataHandler.processData(data);
+        console.log("\nStatus: " + status);
+    });
+  },
+  processData : function (data) {
+    console.log(data );
+    if (data=="0 results") {
+
+    } else {
+      var responseJSON = JSON.parse(data);
+
+      for (var i = 0; i < responseJSON.length; i++) {
+        // if response[number] is not empty
+        if (responseJSON[i]!=="") {
+          var answerNum = responseJSON[i].slice(-1);
+
+          messagesHandler.responseInit(answerNum,false);
+        }
+
+      }
+
+    }
+
+
+  }
+}
 
 // activeert de app
 app.init();
