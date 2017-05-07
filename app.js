@@ -124,8 +124,23 @@ var messagesHandler = {
     }, function() {
       console.log("response" + questionNumber + " has been stored");
     });
+  },
+
+
+  // stuurt de info naar de php die het vervolgens in de database zet
+  storeName: function (userCode, name ) {
+    // post request naar dbfunctions.php
+    $.post("php/dbfunctions.php", {
+        usercode: userCode,
+        name: name
+    }, function() {
+      console.log("response" + questionNumber + " has been stored");
+    });
   }
 };
+
+
+
 
 var dataHandler = {
   getResponseHistory : function () {

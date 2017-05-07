@@ -19,6 +19,11 @@
       </div>
     </div>
 
+    <form action="index.php" method="get">
+      <input type="text" name="name"><br>
+      <input type="submit">
+    </form>
+
     <div id="buttonArea">
       <button id="button1">Ik ben Herbert!</button>
       <button id="button2">Ik ben Kasper!</button>
