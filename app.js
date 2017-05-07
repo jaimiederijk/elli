@@ -129,7 +129,7 @@ var messagesHandler = {
 
 var dataHandler = {
   getResponseHistory : function () {
-    $.get("php/dbfunctions.php",{
+    $.get("php/getdata.php",{
       usercode: currentUserCode
     }, function(data, status){
         dataHandler.processData(data);
@@ -141,11 +141,12 @@ var dataHandler = {
     if (data=="0 results") {
 
     } else {
-      var responseJSON = JSON.parse(data);
+      var responseJSON = data;
 
       for (var i = 0; i < responseJSON.length; i++) {
         // if response[number] is not empty
         if (responseJSON[i]!=="") {
+          
           var answerNum = responseJSON[i].slice(-1);
 
           messagesHandler.responseInit(answerNum,false);

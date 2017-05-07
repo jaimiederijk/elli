@@ -31,27 +31,7 @@
     }
   }
 
-  // haal data op
-  if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    if (!empty($_GET["usercode"])) {
-      $userCodeHis = $_GET["usercode"];
 
-      $sql = "SELECT * FROM `leerlingen` WHERE user_code = '".$userCodeHis."'";
-      $result = $conn->query($sql);
-
-      if ($result->num_rows > 0) {
-      // output data of each row
-      while($row = $result->fetch_assoc()) {
-        $array = array($row["response1"], $row["response2"], $row["response3"], $row["response4"], $row["response5"], $row["response6"] );
-
-        echo json_encode($array);
-      }
-      } else {
-          echo "0 results";
-      }
-    }
-
-  }
 
   function test_input($data) {
     $data = trim($data);
