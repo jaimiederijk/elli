@@ -20,8 +20,8 @@
     </div>
 
     <form action="index.php" method="get">
-      <input type="text" name="name"><br>
-      <input type="submit">
+      <input type="text" name="name" id="name">
+      <input type="submit" id="submit">
     </form>
 
     <div id="buttonArea">

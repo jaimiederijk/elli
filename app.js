@@ -4,7 +4,8 @@
 var htmlElements = {
   messages: $("#messages"),
   button1:$("#button1"),
-  button2:$("#button2")
+  button2:$("#button2"),
+  submit: $("#submit")
 };
 
 // start punt voor de javascript code
@@ -16,11 +17,13 @@ var app = {
   }
 };
 
+var name = document.getElementById('name').value;
+
 // lijst met antwoorden die de gebruiker geeft
 var simpleUserResponses = {
   question1: {
-    message1 : "Hello, mijn naam is Herbert",
-    message2 : "Hello, mijn naam is Kasper"
+    message1 : "Hello, mijn naam is" + name,
+    message2 : ""
   },
   question2: {
     message1 : "is goed",
@@ -61,6 +64,9 @@ var currentUserCode = 111111;// !!!!!! FIX ME   usercode moet gebruiker afhankel
 var messagesHandler = {
   addClick : function () {
     // click events op de buttons
+    htmlElements.submit.click( function() {
+      messagesHandler.responseInit(1, true);
+    });
     htmlElements.button1.click( function() {
       messagesHandler.responseInit(1, true);
     });
@@ -134,7 +140,7 @@ var messagesHandler = {
         usercode: userCode,
         name: name
     }, function() {
-      console.log("response" + questionNumber + " has been stored");
+      console.log(name + " has been stored");
     });
   }
 };
