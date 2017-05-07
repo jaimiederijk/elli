@@ -117,7 +117,7 @@ var messagesHandler = {
   // stuurt de info naar de php die het vervolgens in de database zet
   storeUserResponse: function (userCode, response ) {
     // post request naar dbfunctions.php
-    $.post("dbfunctions.php", {
+    $.post("php/dbfunctions.php", {
         questionnumber : questionNumber,
         usercode: userCode,
         response: response
@@ -129,7 +129,7 @@ var messagesHandler = {
 
 var dataHandler = {
   getResponseHistory : function () {
-    $.get("dbfunctions.php",{
+    $.get("php/dbfunctions.php",{
       usercode: currentUserCode
     }, function(data, status){
         dataHandler.processData(data);
