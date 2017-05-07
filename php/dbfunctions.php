@@ -8,11 +8,12 @@
       die("Connection failed: " . $conn->connect_error);
   }
 
-  $userCode = $userCodeHis = $response = $questionNumber = $responseWithNumber = "";
+  $userCode = $sql = $name = $response = $questionNumber = $responseWithNumber = "";
 
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $userCode = test_input($_POST["usercode"]);
     if (!empty($_POST["response"])) {
-      $userCode = test_input($_POST["usercode"]);
+
       $response = test_input($_POST["response"]);
       $questionNumber = test_input($_POST["questionnumber"]);
 
@@ -20,14 +21,18 @@
 
       $sql = "UPDATE `leerlingen` SET `".$responseWithNumber."`= '".$response."' WHERE user_code = '".$userCode."' ";
 
-      if ($conn->query($sql) === TRUE) {
-          echo "New response created successfully";
-          $_POST = array();
-          // header("Location: index.php"); // redirect back to your contact form
-          exit;
-      } else {
-          echo "Error: " . $sql . "<br>" . $conn->error;
-      }
+    }
+    if (!empty($_POST["name"])) {
+      $name = $_POST["name"];
+      $sql = "UPDATE `leerlingen` SET `name`= '".$name."' WHERE user_code = '".$userCode."' ";
+    }
+    if ($conn->query($sql) === TRUE) {
+        echo "New response created successfully";
+        $_POST = array();
+        // header("Location: index.php"); // redirect back to your contact form
+        exit;
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
   }
 
