@@ -17,12 +17,15 @@ var app = {
   }
 };
 
+// naam van gebruiker
+var name = "placeholder"
+
 
 
 // lijst met antwoorden die de gebruiker geeft
 var simpleUserResponses = {
   question1: {
-    message1 : "Hello, mijn naam is" + name,
+    message1 : "Hello, mijn naam is " + name,
     message2 : ""
   },
   question2: {
@@ -34,7 +37,7 @@ var simpleUserResponses = {
 
 var simpleElliResponses = {
   question1: {
-    message1 : "<div class='messageEllie'> <p>mag ik jou vragen stellen Herbert?</p> </div>",
+    message1 : "<div class='messageEllie'> <p>mag ik jou vragen stellen " + name + "?</p> </div>",
     message2 : "<div class='messageEllie'> <p>Hello, Kasper mag ik jou vragen stellen?</p> </div>"
   },
   question2: {
@@ -60,12 +63,19 @@ var questionNumber = 1;
 
 var currentUserCode = 111111;// !!!!!! FIX ME   usercode moet gebruiker afhankelijk worden
 
+
+
+
+
 // de verzameling functie die de chat afhandelen
 var messagesHandler = {
   addClick : function () {
     // click events op de buttons
     htmlElements.submit.click( function() {
       messagesHandler.responseInit(1, true);
+
+      
+
     });
     htmlElements.button1.click( function() {
       messagesHandler.responseInit(1, true);
@@ -76,16 +86,13 @@ var messagesHandler = {
   },
   responseInit : function (answerNumber, withTimeOut) {
     // roep functies op met als argument welk antwoord(nummer) er gegeven moet worden
-    messagesHandler.storeName(name);
+    messagesHandler.storeName();
     messagesHandler.userResponse(answerNumber);
     // timeout die vertraagd de response van Elli oproept
-    if (withTimeOut) {
-      setTimeout( function() {
+    setTimeout( function() {
         messagesHandler.elliResponse(answerNumber);
-      }, 1000);
-    } else {
-      messagesHandler.elliResponse(answerNumber);
-    }
+    }, 1000);
+    
 
   },
 
@@ -99,16 +106,19 @@ var messagesHandler = {
 
   // maakt het antwoord van de gebruiker en slaat deze op
   userResponse: function (messageNumber) {
+
     var question = "question" + questionNumber;
     var message = "message" + messageNumber;
     var response = simpleUserResponses[question][message];
     var userCode = currentUserCode;
-
     messagesHandler.storeUserResponse(userCode, response+" "+messageNumber)
 
     // voorkom dat er html naar de database gestuurd wordt
     var responseHTML = "<div class='messageUser'> <p>" + response +  "</p> </div>";
     htmlElements.messages.append(responseHTML);
+
+
+
   },
 
   // maakt het antwoord van Elli
@@ -119,6 +129,13 @@ var messagesHandler = {
     htmlElements.messages.append(simpleElliResponses[question][message]);
     messagesHandler.changeButtonText();
     questionNumber++;
+
+    //controleer het questionNumber en pas als het nodig is de input aan voor het antwoord van de gebruiker
+    if (questionNumber == 2) {
+      $("form").toggleClass("hide");
+      $("#buttonArea").toggleClass("hide");
+      console.log("input veranderen");
+    }
   },
 
   // stuurt de info naar de php die het vervolgens in de database zet
@@ -137,11 +154,12 @@ var messagesHandler = {
   // stuurt de info naar de php die het vervolgens in de database zet
   storeName: function (userCode, name ) {
     // post request naar dbfunctions.php
-    var name = document.getElementById('name').value;
     $.post("php/dbfunctions.php", {
         usercode: userCode,
         name: name
     }, function() {
+      //sla naam van gebruiker op
+      name = "piet";
       console.log(name + " has been stored");
     });
   }

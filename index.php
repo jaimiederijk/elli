@@ -9,12 +9,13 @@
     <title>Elli</title>
     <meta name="description" content="afstudeerproject demo">
     <meta name="author" content="Herbert de Vrijer">
-    <!-- <link href="css/style.css" rel="stylesheet" type="text/css"> -->
+    <link href="app.css" rel="stylesheet" type="text/css">
     </head>
   <body>
     <div id="messages">
       <div id="start_Ellie" class="messageEllie">
         <p>Hallo, mijn naam is Ellie</p>
+        <p>Wat is jou naam?</p>
       </div>
     </div>
 
@@ -23,9 +24,9 @@
       <input type="submit" id="submit">
     </form>
 
-    <div id="buttonArea">
-      <button id="button1">Ik ben Herbert!</button>
-      <button id="button2">Ik ben Kasper!</button>
+    <div id="buttonArea" class="hide">
+      <button id="button1">placeholder1</button>
+      <button id="button2">placeholder2</button>
     </div>
   <footer>
     <p>gemaakt door <a target="_blank" href="http://www.herbertdevrijer.nl">Herbert de Vrijer</a> voor CMD amsterdam</p>
