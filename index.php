@@ -9,12 +9,11 @@
     <title>Elli</title>
     <meta name="description" content="afstudeerproject demo">
     <meta name="author" content="Herbert de Vrijer">
-    <link href="css/style.css" rel="stylesheet" type="text/css">
+    <!-- <link href="css/style.css" rel="stylesheet" type="text/css"> -->
     </head>
   <body>
     <div id="messages">
       <div id="start_Ellie" class="messageEllie">
-        <img src="img/Ellie.jpg">
         <p>Hallo, mijn naam is Ellie</p>
       </div>
     </div>

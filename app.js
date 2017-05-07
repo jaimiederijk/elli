@@ -17,7 +17,7 @@ var app = {
   }
 };
 
-var name = document.getElementById('name').value;
+
 
 // lijst met antwoorden die de gebruiker geeft
 var simpleUserResponses = {
@@ -76,6 +76,7 @@ var messagesHandler = {
   },
   responseInit : function (answerNumber, withTimeOut) {
     // roep functies op met als argument welk antwoord(nummer) er gegeven moet worden
+    messagesHandler.storeName(name);
     messagesHandler.userResponse(answerNumber);
     // timeout die vertraagd de response van Elli oproept
     if (withTimeOut) {
@@ -136,6 +137,7 @@ var messagesHandler = {
   // stuurt de info naar de php die het vervolgens in de database zet
   storeName: function (userCode, name ) {
     // post request naar dbfunctions.php
+    var name = document.getElementById('name').value;
     $.post("php/dbfunctions.php", {
         usercode: userCode,
         name: name
