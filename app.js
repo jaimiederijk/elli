@@ -5,7 +5,7 @@ var htmlElements = {
   messages: $("#messages"),
   button1:$("#button1"),
   button2:$("#button2"),
-  submit: $("#submit")
+  form: $("#nameform")
 };
 
 // start punt voor de javascript code
@@ -16,8 +16,6 @@ var app = {
     dataHandler.getResponseHistory();
   }
 };
-
-
 
 // lijst met antwoorden die de gebruiker geeft
 var simpleUserResponses = {
@@ -34,10 +32,14 @@ var simpleUserResponses = {
 
 var simpleElliResponses = {
   question1: {
-    message1 : "<div class='messageEllie'> <p>mag ik jou vragen stellen Herbert?</p> </div>",
+    message1 : "<div class='messageEllie'> <p>mag ik jou vragen stellen " + name + "?</p> </div>",
     message2 : "<div class='messageEllie'> <p>Hello, Kasper mag ik jou vragen stellen?</p> </div>"
   },
   question2: {
+    message1 : "<div class='messageEllie'> <p>is hou van je</p> </div>",
+    message2 : "<div class='messageEllie'> <p>ik haat je </p> </div>"
+  },
+  question3: {
     message1 : "<div class='messageEllie'> <p>is hou van je</p> </div>",
     message2 : "<div class='messageEllie'> <p>ik haat je </p> </div>"
   }
@@ -53,25 +55,30 @@ var answers = {
     answer1: "ok",
     answer2: "not cool"
   }
-}
-
+};
+// naam van gebruiker
+var name = "";
 // variable die bijhoudt op welke vraag en antwoord je zit
 var questionNumber = 1;
 
 var currentUserCode = 111111;// !!!!!! FIX ME   usercode moet gebruiker afhankelijk worden
 
-var userName = "";
 
 // de verzameling functie die de chat afhandelen
 var messagesHandler = {
   addClick : function () {
     // click events op de buttons
-    htmlElements.submit.click( function() {
+    htmlElements.form.submit( function() {
       var formData = $('form').serializeArray();
        //var name = document.getElementById('name').value;   werkt ook maar dit is netter
       var formName = formData[0].value;
       name = formName;
+      //reset answers nodig voor alle antwoorden met variablen
+      simpleUserResponses.question1.message1 = "Hello, mijn naam is " + name;
+      simpleElliResponses.question1.message1 = "<div class='messageEllie'> <p>mag ik jou vragen stellen " + name + "?</p> </div>";
       messagesHandler.storeName(currentUserCode, formName);
+      messagesHandler.responseInit(1, true);
+      return false;
     });
     htmlElements.button1.click( function() {
       messagesHandler.responseInit(1, true);
@@ -82,9 +89,10 @@ var messagesHandler = {
   },
   responseInit : function (answerNumber, withTimeOut) {
     // roep functies op met als argument welk antwoord(nummer) er gegeven moet worden
-    messagesHandler.userResponse(answerNumber);
+    messagesHandler.userResponse(answerNumber, withTimeOut);
     // timeout die vertraagd de response van Elli oproept
     if (withTimeOut) {
+
       setTimeout( function() {
         messagesHandler.elliResponse(answerNumber);
       }, 1000);
@@ -103,17 +111,22 @@ var messagesHandler = {
   },
 
   // maakt het antwoord van de gebruiker en slaat deze op
-  userResponse: function (messageNumber) {
+  userResponse: function (messageNumber,withTimeOut) {
+
     var question = "question" + questionNumber;
     var message = "message" + messageNumber;
     var response = simpleUserResponses[question][message];
     var userCode = currentUserCode;
-
-    messagesHandler.storeUserResponse(userCode, response+" "+messageNumber)
+    if (withTimeOut) {
+      messagesHandler.storeUserResponse(userCode, response+" "+messageNumber)
+    }
 
     // voorkom dat er html naar de database gestuurd wordt
     var responseHTML = "<div class='messageUser'> <p>" + response +  "</p> </div>";
     htmlElements.messages.append(responseHTML);
+
+
+
   },
 
   // maakt het antwoord van Elli
@@ -124,6 +137,13 @@ var messagesHandler = {
     htmlElements.messages.append(simpleElliResponses[question][message]);
     messagesHandler.changeButtonText();
     questionNumber++;
+
+    //controleer het questionNumber en pas als het nodig is de input aan voor het antwoord van de gebruiker
+    if (questionNumber == 2) {
+      $("form").toggleClass("hide");
+      $("#buttonArea").toggleClass("hide");
+      console.log("input veranderen");
+    }
   },
 
   // stuurt de info naar de php die het vervolgens in de database zet
@@ -146,6 +166,8 @@ var messagesHandler = {
         usercode: userCode,
         name: namep
     }, function() {
+      //sla naam van gebruiker op
+      name = namep;
       console.log(name + " has been stored");
     });
   }
@@ -171,6 +193,7 @@ var dataHandler = {
       var responseJSON = data;
       if (responseJSON.name !=="") {
         name = responseJSON.name;
+
       }
       for (var i = 0; i < responseJSON.responses.length; i++) {
         // if response[number] is not empty
